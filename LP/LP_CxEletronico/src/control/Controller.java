@@ -1,48 +1,73 @@
 package control;
-
+import main.Principal;
 
 public class Controller {
-
- 
- public int [][] Retirada ( int [] cx, int quantSaque, int valor, int [][] notasRetiradas, int i)throws Exception {
 	
-	if (valor == 0) {
-		quantSaque -=1;
-		return notasRetiradas;
-	}
-	else if (quantSaque<=0) {
-		throw new Exception("Quantidade de saque atingiu o limite");
-	}
-	else if (cx[i]>0 && valor<10 && valor%2 == 0) {
-		i=0;
-		return Retirada (cx,quantSaque,valor, notasRetiradas,i);
-	}
-	else if(cx[i]>0 && valor>notasRetiradas[i][1]){
-		notasRetiradas[i][0] += 1;
-		valor -= notasRetiradas [i][1];
-		cx[i] -= 1;
-		i--;
+	public int[][] Retirada(int valor, int[][] notasRetiradas, int i) throws Exception {
+		int quantSaque = Principal.quantSaque;
+		int  cx[][] = Principal.cx;
+		int TotalCx = VerifTotalCx(cx);
+		if (valor > TotalCx)
+		{
+			throw new Exception("Não há notas disponiveis para sacar esse Valor");
+		}
+		if (valor == 0)
+		{
+			Principal.quantSaque -= 1;
+			Principal.cx = cx;
+			return notasRetiradas;
+		}
+			else if (quantSaque <= 0)
+			{
+				throw new Exception("Quantidade de saque atingiu o limite");
+			}
+			else if (cx[1][i] > 0 && valor < 10 && valor % 2 == 0)
+			{
+				i = 0;
+				int putvalue = valor / 2;
+				notasRetiradas[1][i] += putvalue;
+				valor = valor % 2;
+				cx[1][i] -= putvalue;
+				return Retirada(valor, notasRetiradas, i);
+			} 
+			else if (valor - notasRetiradas[0][i] == 3 || valor - notasRetiradas[0][i] == 1)
+			{
+				i--;
+				return Retirada(valor, notasRetiradas, i);
+			}
+			else if (cx[1][i] > 0 && valor >= notasRetiradas[0][i])
+			{
+				notasRetiradas[1][i] += 1;
+				valor -= notasRetiradas[0][i];
+				cx[1][i] -= 1;
+	
+			}
+			else if (valor < notasRetiradas[0][i])
+			{
+				i--;
+			}
+
 		
-		return Retirada (cx,quantSaque,valor, notasRetiradas,i);
+
+		return Retirada(valor, notasRetiradas, i);
+
 	}
-	
-		return Retirada (cx,quantSaque,valor, notasRetiradas,i);
-	
-	
+
+	public int VerifTotalCx(int[][] cx) {
+		int soma=0;
+		for (int i=0; i <cx[0].length;i++) {
+			soma += cx[1][i]*cx[0][i];
+		}
+		return soma;
+	}
+
+	public void EncherCx(int[][] cx, int quant) {
+		for (int i = 0; i < cx[0].length; i++) {
+			cx[1][i] = quant;
+		}
+		;
+
+	}
+
 }
-
-
-public void EncherCx(int[] cx, int quant)
-{
-	 for (int i =0 ; i < cx.length-1; i++)
-	 {
-	 cx[i] = quant;
-};
-	
-}
- 
-
- 
-}
-
 
